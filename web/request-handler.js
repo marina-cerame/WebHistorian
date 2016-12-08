@@ -41,7 +41,6 @@ exports.handleRequest = function (req, res) {
     });
     req.on('end', function () {
       let newBody = body.substring(4);
-      console.log(newBody + ' body');
       let fd = fs.openSync(archive.paths.list, 'w');
       fs.writeSync(fd, newBody + '\n');
       fs.closeSync(fd);
@@ -52,5 +51,4 @@ exports.handleRequest = function (req, res) {
     res.writeHead(404, 'Go home ur drunk');
     res.end();
   }
-
 };
