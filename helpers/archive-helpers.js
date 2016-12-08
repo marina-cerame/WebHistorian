@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
-var dP = require('../workers/htmlfetcher');
+// var dP = require('../workers/htmlfetcher');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -52,7 +52,7 @@ exports.isUrlArchived = isUrlArchived = function(url) {
 exports.downloadUrls = downloadUrls = function(urls) {
   urls.forEach(function(url) {
     if (!isUrlArchived(url)) {
-      dP.downloadPage(paths.archivedSites + '/' + url, url);
+      // dP.downloadPage(paths.archivedSites + '/' + url, url);
     }
   });
 };
