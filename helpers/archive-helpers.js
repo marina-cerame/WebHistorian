@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var dP = require('../workers/htmlfetcher');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -30,24 +31,31 @@ exports.readListOfUrls = readListOfUrls = function() {
   return siteString.toString().split('\n');
 };
 
-exports.isUrlInList = function(url) {
+exports.isUrlInList = isUrlInList = function(url) {
   let urls = readListOfUrls();
   return _.contains(urls, url);
 };
 
 exports.addUrlToList = function(url) {
-  let fd = fs.openSync(paths.list, 'w');
-  fs.writeSync(fd, url + '\n');
-  fs.closeSync(fd);
+  if (!isUrlInList(url)) {
+    let fd = fs.openSync(paths.list, 'a');
+    fs.writeSync(fd, url + '\n');
+    fs.closeSync(fd);
+  }
 };
 
-exports.isUrlArchived = function(url) {
+exports.isUrlArchived = isUrlArchived = function(url) {
   let urls = fs.readdirSync(paths.archivedSites);
   return _.contains(urls, url);
 };
 
-exports.downloadUrls = function(urls) {
+exports.downloadUrls = downloadUrls = function(urls) {
   urls.forEach(function(url) {
-    fs.writeFile(url, 'data');
+    if (!isUrlArchived(url)) {
+      dP.downloadPage(paths.archivedSites + '/' + url, url);
+    }
   });
 };
+
+let currentUrls = readListOfUrls();
+downloadUrls(currentUrls);

@@ -41,9 +41,7 @@ exports.handleRequest = function (req, res) {
     });
     req.on('end', function () {
       let newBody = body.substring(4);
-      let fd = fs.openSync(archive.paths.list, 'w');
-      fs.writeSync(fd, newBody + '\n');
-      fs.closeSync(fd);
+      archive.addUrlToList(newBody);
       res.writeHead(302, {'Content-Type': 'text/html'});
       res.end(loading);
     });
