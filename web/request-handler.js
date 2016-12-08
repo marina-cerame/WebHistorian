@@ -1,13 +1,13 @@
 const path = require('path');
 const fs = require('fs');
 const archive = require('../helpers/archive-helpers');
-const index = fs.readFileSync('/Users/tyreesha/documents/gitimmersion/opspark/sprints/course.web-historian.exercise/web/public/index.html', {}, function (err, data) {
+const index = fs.readFileSync('/Users/marinacerame/Documents/gitimmersion/opspark/sprints/WebHistorian/web/public/index.html', {}, function (err, data) {
   if (err) {
     throw err;
   }
   return data;
 });
-const loading = fs.readFileSync('/Users/tyreesha/documents/gitimmersion/opspark/sprints/course.web-historian.exercise/web/public/loading.html', {}, function (err, data) {
+const loading = fs.readFileSync('/Users/marinacerame/Documents/gitimmersion/opspark/sprints/WebHistorian/web/public/loading.html', {}, function (err, data) {
   if (err) {
     throw err;
   }
