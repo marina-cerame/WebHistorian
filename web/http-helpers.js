@@ -2,7 +2,7 @@ var path = require('path');
 var fs = require('fs');
 var archive = require('../helpers/archive-helpers');
 
-exports.headers = {
+exports.headers = headers = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'access-control-allow-headers': 'content-type, accept',
@@ -11,7 +11,7 @@ exports.headers = {
 };
 
 exports.serveAssets = function(res, asset, status) {
-  fs.readFile(archives.paths.siteAssets + '/' + asset, (error, data) => {
+  fs.readFile(archive.paths.siteAssets + '/' + asset, (error, data) => {
     if (error) {
       throw error;
     }
@@ -21,7 +21,7 @@ exports.serveAssets = function(res, asset, status) {
 };
 
 exports.serveArchives = function(res, url, status) {
-  fs.readFile(archives.paths.archivedSites + '/' + url, (error, data) => {
+  fs.readFile(archive.paths.archivedSites + '/' + url, (error, data) => {
     if (error) {
       throw error;
     }

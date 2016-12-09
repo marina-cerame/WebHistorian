@@ -86,7 +86,6 @@ describe('archive helpers', function() {
         expect(urls).to.deep.equal(urlArray);
         done();
       });
-      done();
     });
   });
 
@@ -107,7 +106,6 @@ describe('archive helpers', function() {
         expect(exists).to.be.false;
         if (++counter === total) { done(); }
       });
-      done();
     });
   });
 
@@ -122,7 +120,6 @@ describe('archive helpers', function() {
           done();
         });
       });
-      done();
     });
   });
 
@@ -142,7 +139,6 @@ describe('archive helpers', function() {
         expect(exists).to.be.false;
         if (++counter === total) { done(); }
       });
-      done();
     });
   });
 
@@ -156,7 +152,6 @@ describe('archive helpers', function() {
         expect(fs.readdirSync(archive.paths.archivedSites)).to.deep.equal(urlArray);
         done();
       }, 500);
-      done();
     });
   });
 });

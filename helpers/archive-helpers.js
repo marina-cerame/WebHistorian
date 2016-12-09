@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var http = require('http');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -44,30 +45,30 @@ exports.isUrlInList = isUrlInList = function(url, cb) {
 };
 
 exports.addUrlToList = function(url, cb) {
-  fs.appendFile(paths.list, url, '\n', () => {
+  fs.appendFile(paths.list, url + '\n', {encoding: 'utf8'}, () => {
     cb ? cb() : null;
   });
 };
 
 exports.isUrlArchived = isUrlArchived = function(url, cb) {
-  search(paths.archivedSites, url, (found) => {
-    cb ? cb(found) : null;
+  fs.readdir(paths.archivedSites, (err, files) => {
+    cb(files.indexOf(url) >= 0);
   });
 };
 
 exports.downloadUrls = downloadUrls = function(urls) {
-  readListOfUrls((sites) => {
-    _.each(sites, site => {
-      http.get(site, res => {
-        let html = res.body;
-        fs.writeFile(paths.archivedSites + '/' + site, html, err => {
-          if (err) { throw err; }
-          console.log('File downloaded!');
-        });
-        // maybe someday come back and remove downloaded files from the queue but NOT TODAY.
-      });
-    });
-  });
+  // readListOfUrls((sites) => {
+  //   _.each(sites, site => {
+  //     http.get(site, res => {
+  //       let html = res.body;
+  //       fs.writeFile(paths.archivedSites + '/' + site, html, err => {
+  //         if (err) { throw err; }
+  //         console.log('File downloaded!');
+  //       });
+  //       // maybe someday come back and remove downloaded files from the queue but NOT TODAY.
+  //     });
+  //   });
+  // });
 };
 
 let currentUrls = readListOfUrls();
