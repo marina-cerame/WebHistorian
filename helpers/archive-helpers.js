@@ -1,7 +1,6 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
-// var dP = require('../workers/htmlfetcher');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -26,34 +25,48 @@ exports.initialize = function(pathsObj) {
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = readListOfUrls = function() {
-  let siteString = fs.readFileSync(paths.list);
-  return siteString.toString().split('\n');
+exports.readListOfUrls = readListOfUrls = function(cb) {
+  fs.readFile(paths.list, (error, sites) => {
+    if (error) { throw error; }
+    sites = sites.toString().split('\n');
+    cb ? cb(sites) : null;
+  });
 };
 
-exports.isUrlInList = isUrlInList = function(url) {
-  let urls = readListOfUrls();
-  return _.contains(urls, url);
+exports.isUrlInList = isUrlInList = function(url, cb) {
+  let urls = readListOfUrls((sites) => {
+    let matched = false;
+    sites.forEach((el, i) => {
+      matched = el.match(url) ? true : matched;
+    });
+    cb(matched);
+  });
 };
 
-exports.addUrlToList = function(url) {
-  if (!isUrlInList(url)) {
-    let fd = fs.openSync(paths.list, 'a');
-    fs.writeSync(fd, url + '\n');
-    fs.closeSync(fd);
-  }
+exports.addUrlToList = function(url, cb) {
+  fs.appendFile(paths.list, url, '\n', () => {
+    cb ? cb() : null;
+  });
 };
 
-exports.isUrlArchived = isUrlArchived = function(url) {
-  let urls = fs.readdirSync(paths.archivedSites);
-  return _.contains(urls, url);
+exports.isUrlArchived = isUrlArchived = function(url, cb) {
+  search(paths.archivedSites, url, (found) => {
+    cb ? cb(found) : null;
+  });
 };
 
 exports.downloadUrls = downloadUrls = function(urls) {
-  urls.forEach(function(url) {
-    if (!isUrlArchived(url)) {
-      // dP.downloadPage(paths.archivedSites + '/' + url, url);
-    }
+  readListOfUrls((sites) => {
+    _.each(sites, site => {
+      http.get(site, res => {
+        let html = res.body;
+        fs.writeFile(paths.archivedSites + '/' + site, html, err => {
+          if (err) { throw err; }
+          console.log('File downloaded!');
+        });
+        // maybe someday come back and remove downloaded files from the queue but NOT TODAY.
+      });
+    });
   });
 };
 
