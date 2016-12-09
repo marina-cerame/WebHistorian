@@ -35,6 +35,7 @@ exports.readListOfUrls = readListOfUrls = function(cb) {
 };
 
 exports.isUrlInList = isUrlInList = function(url, cb) {
+  console.log('CHECKING IF IS IN LIST');
   let urls = readListOfUrls((sites) => {
     let matched = false;
     sites.forEach((el, i) => {
@@ -45,6 +46,7 @@ exports.isUrlInList = isUrlInList = function(url, cb) {
 };
 
 exports.addUrlToList = function(url, cb) {
+  console.log('ADDING TO LIST');
   fs.appendFile(paths.list, url + '\n', {encoding: 'utf8'}, () => {
     cb ? cb() : null;
   });
@@ -57,18 +59,25 @@ exports.isUrlArchived = isUrlArchived = function(url, cb) {
 };
 
 exports.downloadUrls = downloadUrls = function(urls) {
-  // readListOfUrls((sites) => {
-  //   _.each(sites, site => {
-  //     http.get(site, res => {
-  //       let html = res.body;
-  //       fs.writeFile(paths.archivedSites + '/' + site, html, err => {
-  //         if (err) { throw err; }
-  //         console.log('File downloaded!');
-  //       });
-  //       // maybe someday come back and remove downloaded files from the queue but NOT TODAY.
-  //     });
-  //   });
-  // });
+  readListOfUrls((sites) => {
+    sites.pop();
+    _.each(sites, (site, index) => {
+      let fixedSite = 'http://' + site;
+      http.get(fixedSite, res => {
+        let html = res.body;
+        fs.writeFile(paths.archivedSites + '/' + site, html, err => {
+          if (err) { throw err; }
+          let newSites = sites.slice(index + 1).join('\n');
+          console.log(newSites);
+
+          fs.writeFile(paths.list, newSites, {encoding: 'utf8'}, (error) => {
+            if (error) { throw error; }
+          });
+          console.log('File downloaded!');
+        });
+      });
+    });
+  });
 };
 
 let currentUrls = readListOfUrls();

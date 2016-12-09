@@ -11,7 +11,9 @@ exports.headers = headers = {
 };
 
 exports.serveAssets = function(res, asset, status) {
-  fs.readFile(archive.paths.siteAssets + '/' + asset, (error, data) => {
+  console.log(asset, "THIS IS ASSET");
+  console.log(archive.paths.siteAssets);
+  fs.readFile(archive.paths.siteAssets + '/' + asset, {encoding: 'utf8'}, (error, data) => {
     if (error) {
       throw error;
     }
@@ -21,7 +23,7 @@ exports.serveAssets = function(res, asset, status) {
 };
 
 exports.serveArchives = function(res, url, status) {
-  fs.readFile(archive.paths.archivedSites + '/' + url, (error, data) => {
+  fs.readFile(archive.paths.archivedSites + '/' + url, {encoding: 'utf8'}, (error, data) => {
     if (error) {
       throw error;
     }

@@ -23,7 +23,8 @@ exports.handleRequest = function (req, res) {
     if (req.url === '/') {
       helpers.serveAssets(res, 'index.html', 200);
     } else {
-      archive.isUrlArchived(req.url, (found) => {
+      let url = req.url.slice(1);
+      archive.isUrlArchived(url, (found) => {
         if (found) {
           helpers.serveArchives(res, req.url, 200);
         } else {
