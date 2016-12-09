@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
 var http = require('http');
+var Promise = require('bluebird');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -26,7 +27,7 @@ exports.initialize = function(pathsObj) {
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = readListOfUrls = function(cb) {
+let readListOfUrls = function(cb) {
   fs.readFile(paths.list, (error, sites) => {
     if (error) { throw error; }
     sites = sites.toString().split('\n');
@@ -34,8 +35,9 @@ exports.readListOfUrls = readListOfUrls = function(cb) {
   });
 };
 
-exports.isUrlInList = isUrlInList = function(url, cb) {
-  console.log('CHECKING IF IS IN LIST');
+exports.readListOfUrls = Promise.promisify(readListOfUrls);
+
+let isUrlInList = function(url, cb) {
   let urls = readListOfUrls((sites) => {
     let matched = false;
     sites.forEach((el, i) => {
@@ -45,20 +47,21 @@ exports.isUrlInList = isUrlInList = function(url, cb) {
   });
 };
 
-exports.addUrlToList = function(url, cb) {
-  console.log('ADDING TO LIST');
+exports.isUrlInList = Promise.promisify(isUrlInList);
+
+exports.addUrlToList = Promise.promisify(function(url, cb) {
   fs.appendFile(paths.list, url + '\n', {encoding: 'utf8'}, () => {
     cb ? cb() : null;
   });
-};
+});
 
-exports.isUrlArchived = isUrlArchived = function(url, cb) {
+exports.isUrlArchived = isUrlArchived = Promise.promisify(function(url, cb) {
   fs.readdir(paths.archivedSites, (err, files) => {
     cb(files.indexOf(url) >= 0);
   });
-};
+});
 
-exports.downloadUrls = downloadUrls = function(urls) {
+exports.downloadUrls = downloadUrls = Promise.promisify(function(urls) {
   readListOfUrls((sites) => {
     sites.pop();
     _.each(sites, (site, index) => {
@@ -78,7 +81,7 @@ exports.downloadUrls = downloadUrls = function(urls) {
       });
     });
   });
-};
+});
 
-let currentUrls = readListOfUrls();
-downloadUrls(currentUrls);
+// let currentUrls = readListOfUrls();
+// downloadUrls(currentUrls);

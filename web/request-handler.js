@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const archive = require('../helpers/archive-helpers');
 const helpers = require('./http-helpers');
+let Promise = require('bluebird');
 // let index;
 // fs.readFile('/Users/marinacerame/Documents/gitimmersion/opspark/sprints/WebHistorian/web/public/index.html', {encoding: 'utf-8'}, function (err, data) {
 //   if (err) {
@@ -18,7 +19,7 @@ const helpers = require('./http-helpers');
 // });
 // require more modules/folders here!
 
-exports.handleRequest = function (req, res) {
+exports.handleRequest = Promise.promisify(function (req, res) {
   if (req.method === 'GET') {
     if (req.url === '/') {
       helpers.serveAssets(res, 'index.html', 200);
@@ -101,4 +102,4 @@ exports.handleRequest = function (req, res) {
   //   res.writeHead(404, 'Go home ur drunk');
   //   res.end();
   // }
-};
+});

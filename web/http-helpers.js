@@ -11,8 +11,6 @@ exports.headers = headers = {
 };
 
 exports.serveAssets = function(res, asset, status) {
-  console.log(asset, "THIS IS ASSET");
-  console.log(archive.paths.siteAssets);
   fs.readFile(archive.paths.siteAssets + '/' + asset, {encoding: 'utf8'}, (error, data) => {
     if (error) {
       throw error;
